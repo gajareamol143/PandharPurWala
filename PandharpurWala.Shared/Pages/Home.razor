@@ -1,0 +1,31 @@
+﻿@page "/"
+@using Microsoft.Maui.Devices
+@inject NavigationManager Navigation
+
+@code {
+    private bool IsWeb => DeviceInfo.Platform == DevicePlatform.Unknown;
+    private bool IsMobile => DeviceInfo.Platform == DevicePlatform.Android || DeviceInfo.Platform == DevicePlatform.iOS;
+    private bool hasNavigated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !hasNavigated)
+        {
+            hasNavigated = true;
+
+            // Perform platform-specific navigation
+            if (IsWeb)
+            {
+                Navigation.NavigateTo("/webhome");
+            }
+            else if (IsMobile)
+            {
+                Navigation.NavigateTo("/apphome");
+            }
+            else
+            {
+                Navigation.NavigateTo("/apphome");
+            }
+        }
+    }
+}

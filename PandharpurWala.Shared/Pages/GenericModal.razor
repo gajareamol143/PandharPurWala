@@ -1,0 +1,47 @@
+﻿@code {
+    [Parameter] public string Title { get; set; } = "Modal Title";
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+}
+
+<!-- Modal Trigger (button to open modal can be added here if needed) -->
+<!-- Modal -->
+<div class="modal fade" id="dynamicModal" tabindex="-1" aria-labelledby="dynamicModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @ChildContent
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @onclick="HandleSave">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private async Task HandleSave()
+    {
+        if (OnSave.HasDelegate)
+        {
+            await OnSave.InvokeAsync();
+        }
+    }
+
+    public void ShowModal()
+    {
+        JS.InvokeVoidAsync("showBootstrapModal", "#dynamicModal");
+    }
+
+    public void HideModal()
+    {
+        JS.InvokeVoidAsync("hideBootstrapModal", "#dynamicModal");
+    }
+
+    [Inject] private IJSRuntime JS { get; set; }
+}
